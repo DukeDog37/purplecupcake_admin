@@ -5,15 +5,15 @@ $(document).ready(function() {
   var customerList = $("tbody");
   var customerContainer = $(".customer-container");
 
-  var vfirstname = "customer fn 1";
-  var vlastname = "customer ln 1";
-  var vemail = "email@email.com";
-  var vpassword = "password";
-  var vaddr1 = "Addr 1";
-  var vaddr2 = "Addr 2";
-  var vcity = "City";
-  var vstate = "State";
-  var vzip = "22101"; 
+  var vfirstname = $("#customer-fname");
+  var vlastname = $("#customer-lname");
+  var vemail = $("#customer-email");
+  var vpassword = $("#customer-password");
+  var vaddr1 = $("#customer-addr1");
+  var vaddr2 = $("#customer-addr2");
+  var vcity = $("#customer-city");
+  var vstate = $("#customer-state");
+  var vzip = $("#customer-zip");
 
   
   $(document).on("submit", "#customer-form", handleCustomerFormSubmit);
@@ -26,13 +26,13 @@ $(document).ready(function() {
   function handleCustomerFormSubmit(event) {
     event.preventDefault();
    
-    /*if (!nameInput.val().trim().trim()) {
+    if (!vpassword.val().trim().trim()) {
       return;
     }
-    if (!emailInput.val().trim().trim()) {
+    if (!vemail.val().trim().trim()) {
       alter("You must enter a valid email address.");
       return;
-    }*/
+    }
    
     insertCustomer({
       firstname: vfirstname,
@@ -49,17 +49,26 @@ $(document).ready(function() {
 
   
   function insertCustomer(customerData) {
+    console.log(customerData);
     $.post("/api/customers", customerData)
       .then(getCustomers);
   }
 
 
   function createCustomerRow(customerData) {
+    
+    console.log(customerData);
     var newTr = $("<tr>");
     newTr.data("customer", customerData);
-    newTr.append("<td>" + customerData.name + "</td>");
+    newTr.append("<td>" + customerData.firstname + "</td>");
+    newTr.append("<td>" + customerData.lastname + "</td>");
     newTr.append("<td>" + customerData.email + "</td>");
-    newTr.append("<td> " + customerData.Orders.length + "</td>");
+    newTr.append("<td>" + customerData.password + "</td>");
+    newTr.append("<td>" + customerData.addr1 + "</td>");
+    newTr.append("<td>" + customerData.addr2 + "</td>");
+    newTr.append("<td>" + customerData.city + "</td>");
+    newTr.append("<td>" + customerData.state + "</td>");
+    newTr.append("<td>" + customerData.zip + "</td>");
     newTr.append("<td><a href='/orders?customerid=" + customerData.id + "'>Go to Orders</a></td>");
     newTr.append("<td><a href='/cms?customerid=" + customerData.id + "'>Create new Order</a></td>");
     newTr.append("<td><a style='cursor:pointer;color:red' class='delete-customer'>Delete Customer</a></td>");
@@ -68,14 +77,26 @@ $(document).ready(function() {
 
   
   function getCustomers() {
+    console.log("in getCustomers");
     $.get("/api/customers", function(data) {
       var rowsToAdd = [];
+      console.log(data.length);
       for (var i = 0; i < data.length; i++) {
+        console.log("in for loop");
+        console.log(data[i]);
         rowsToAdd.push(createCustomerRow(data[i]));
       }
       renderCustomerList(rowsToAdd);
-      nameInput.val("");
-      emailInput.val("");
+      vfirstname.val("");
+      vlastname.val("");
+      vemail.val("");
+      vpassword.val("");
+      vaddr1.val("");
+      vaddr2.val("");
+      vcity.val("");
+      vstate.val("");
+      vzip.val("");
+
     });
   }
 

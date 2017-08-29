@@ -26,7 +26,7 @@
       </div>
     </div>
 		<div class="row">
-			<div class="col-md-8 col-md-offset-2">
+			<div class="col-md-12">
 				<div class="customer-container">
 					<h1>Customers</h1>
 					<table class="table table-striped">
@@ -35,23 +35,43 @@
 								<th>First Name</th>
 								<th>Last Name</th>
 								<th>eMail</th>
-								<th># of Orders</th>
-								<th>See customer orders</th>
-								<th>New Order</th>
-								<th>Delete Customer</th>
+								<th>Password</th>
+								<th>Address1</th>
+								<th>Address2</th>
+								<th>City</th>
+								<th>State</th>
+								<th>Zip</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr id="form-row">
 								<form id="customer-form">
-									<td colspan="4">
-										<input placeholder="Enter a first name" id="customer-fname" type="text" />
+									<td colspan="1">
+										<input placeholder="Firstname" id="customer-fname" type="text" />
 									</td>
-									<td colspan="4">
-										<input placeholder="Enter a last name" id="customer-lname" type="text" />
+									<td colspan="1">
+										<input placeholder="Lastname" id="customer-lname" type="text" />
 									</td>
-									<td colspan="4">
-										<input placeholder="Enter email" id="customer-email" type="email" />
+									<td colspan="1">
+										<input placeholder="eMail" id="customer-email" type="email" />
+									</td>
+									<td colspan="1">
+										<input placeholder="Password" id="customer-password" type="password" />
+									</td>
+									<td colspan="1">
+										<input placeholder="Address1" id="customer-addr1" type="text" />
+									</td>
+									<td colspan="1">
+										<input placeholder="Address2" id="customer-addr2" type="text" />
+									</td>
+									<td colspan="1">
+										<input placeholder="City" id="customer-city" type="text" />
+									</td>
+									<td colspan="1">
+										<input placeholder="State" id="customer-state" type="text" />
+									</td>
+									<td colspan="1">
+										<input placeholder="Zip" id="customer-zip" type="text" />
 									</td>
 									<td><button type="submit" class="btn btn-success">Create Customer</button>
 									</td>

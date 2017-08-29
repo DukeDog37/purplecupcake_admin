@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.get("/api/customers", function(req, res) {
     //Join Customer to thier Orders
     db.Customer.findAll({
-      include: [db.Orders]
+      include: [db.Order]
     }).then(function(dbCustomer) {
       res.json(dbCustomer);
     });
