@@ -1,42 +1,59 @@
 $(document).ready(function() {
-  // Getting references to the name inout and author container, as well as the table body
-  var nameInput = $("#customer-name");
-  var emailInput = $('#customer-email');
+  
+  //var nameInput = $("#customer-name");
+  //var emailInput = $('#customer-email');
   var customerList = $("tbody");
   var customerContainer = $(".customer-container");
-  // Adding event listeners to the form to create a new object, and the button to delete
-  // an Author
+
+  var vfirstname = "customer fn 1";
+  var vlastname = "customer ln 1";
+  var vemail = "email@email.com";
+  var vpassword = "password";
+  var vaddr1 = "Addr 1";
+  var vaddr2 = "Addr 2";
+  var vcity = "City";
+  var vstate = "State";
+  var vzip = "22101"; 
+
+  
   $(document).on("submit", "#customer-form", handleCustomerFormSubmit);
   $(document).on("click", ".delete-customer", handleDeleteButtonPress);
 
-  // Getting the intiial list of Authors
+  
   getCustomers();
 
-  // A function to handle what happens when the form is submitted to create a new Author
+  
   function handleCustomerFormSubmit(event) {
     event.preventDefault();
-    // Don't do anything if the name fields hasn't been filled out
-    if (!nameInput.val().trim().trim()) {
+   
+    /*if (!nameInput.val().trim().trim()) {
       return;
     }
     if (!emailInput.val().trim().trim()) {
       alter("You must enter a valid email address.");
       return;
-    }
-    // Calling the upsertAuthor function and passing in the value of the name input
-    upsertCustomer({
-      name: nameInput.val().trim(),
-      email: emailInput.val().trim()
+    }*/
+   
+    insertCustomer({
+      firstname: vfirstname,
+      lastname: vlastname,
+      email: vemail,
+      password: vpassword,
+      addr1: vaddr1,
+      addr2: vaddr2,
+      city: vcity,
+      state: vstate,
+      zip: vzip
     });
   }
 
-  // A function for creating an author. Calls getAuthors upon completion
-  function upsertCustomer(customerData) {
+  
+  function insertCustomer(customerData) {
     $.post("/api/customers", customerData)
       .then(getCustomers);
   }
 
-  // Function for creating a new list row for authors
+
   function createCustomerRow(customerData) {
     var newTr = $("<tr>");
     newTr.data("customer", customerData);
@@ -49,7 +66,7 @@ $(document).ready(function() {
     return newTr;
   }
 
-  // Function for retrieving authors and getting them ready to be rendered to the page
+  
   function getCustomers() {
     $.get("/api/customers", function(data) {
       var rowsToAdd = [];
@@ -62,7 +79,7 @@ $(document).ready(function() {
     });
   }
 
-  // A function for rendering the list of authors to the page
+  
   function renderCustomerList(rows) {
     customerList.children().not(":last").remove();
     customerContainer.children(".alert").remove();
@@ -75,7 +92,7 @@ $(document).ready(function() {
     }
   }
 
-  // Function for handling what to render when there are no authors
+  
   function renderEmpty() {
     var alertDiv = $("<div>");
     alertDiv.addClass("alert alert-danger");
@@ -83,7 +100,7 @@ $(document).ready(function() {
     customerContainer.append(alertDiv);
   }
 
-  // Function for handling what happens when the delete button is pressed
+  
   function handleDeleteButtonPress() {
     var listItemData = $(this).parent("td").parent("tr").data("customer");
     var id = listItemData.id;

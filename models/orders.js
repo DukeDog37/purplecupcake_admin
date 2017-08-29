@@ -1,16 +1,17 @@
 module.exports = function(sequelize, DataTypes) {
-  var Orders = sequelize.define("Orders", {
+  var Order = sequelize.define("Order", {
     orderdate: DataTypes.DATE
         
   });
 
-  Orders.associate = function(models) {
+  Order.associate = function(models) {
     // Associating Author with Posts
     // When an Author is deleted, also delete any associated Posts
-    Orders.hasMany(models.Orderitem, {
+    Order.belongsTo(models.Customer);
+    Order.hasMany(models.Orderitems, {
       onDelete: "cascade"
     });
   };
 
-  return Orders;
+  return Order;
 };

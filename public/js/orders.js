@@ -1,129 +1,151 @@
-$(document).ready(function() {
-  /* global moment */
+//$(document).ready(function() {
+  
+  var nameInput = $('#product-name');
+  var descInput = $('#product-desc');
+  var priceInput = $('#product-price');
 
-  // blogContainer holds all of our posts
+  var productContainer = $(".product-container");
+  var productList = $(".tb-products");
+
   var orderContainer = $(".order-container");
+  var orderList = $(".tb-orderitems");
   var orderCategorySelect = $("#category");
-  // Click events for the edit and delete buttons
-  $(document).on("click", "button.delete", handleOrderDelete);
-  $(document).on("click", "button.edit", handleOrderEdit);
-  // Variable to hold our posts
-  var orders;
+  
+  var orderitems;
+  var products;
 
-  // The code below handles the case where we want to get blog posts for a specific author
-  // Looks for a query param in the url for author_id
-  var url = window.location.search;
-  var customerId;
-  if (url.indexOf("?customer_id=") !== -1) {
-    customerId = url.split("=")[1];
-    getPosts(customerId);
+  $(document).on("submit", "#order-form", handleOrderFormSubmit);
+
+  function handleOrderFormSubmit(event) {
+    event.preventDefault();
+    // Don't do anything if at least one items is not checked for order
+      console.log("in handleOrderFormSubmit");
+
+    insertOrder({
+      Customerid: 2 ,
+      orderdate: "01/01/2017",
+       Orderitems: [
+          { productid: 1, quantity: 6, price: 3.33},
+          { productid: 2, quantity: 12, price: 4.55}
+          ]});
+
   }
-  // If there's no authorId we just get all posts as usual
-  else {
-    getOrders();
+     
+  function insertOrder(orderData) {
+    console.log("in insertOrder");
+    $.post("/api/orders", orderData)
+      .then(getProducts);
   }
 
 
-  // This function grabs posts from the database and updates the view
-  function getOrders(customer) {
-    customerId = customer || "";
-    if (customerId) {
-      customerId = "/?customer_id=" + customerId;
+
+
+
+  function addOrderItems() {
+      var itemsToAdd = [];
+      var orderItem;
+      console.log(productList.children(this));
+
+      //orderItem = { "id": productid, "name": productname, "price": productprice, "quantity": qty1 };
+      //console.log("orderItem: " + orderItem);
+      //itemJSON = JSON.stringify(orderItem);
+      //itemsToAdd.push(itemJSON);
+      //console.log(itemsToAdd);
+      //renderOrderItemList(createOrderItemRow(itemsToAdd));
+      //call create item row for html
     }
-    $.get("/api/orders" + customerId, function(data) {
-      console.log("Orders", data);
-      orders = data;
-      if (!orders || !orders.length) {
-        displayEmpty(customer);
-      }
-      else {
-        initializeRows();
-      }
-    });
-  }
 
-  // This function does an API call to delete posts
-  function deleteOrder(id) {
-    $.ajax({
-      method: "DELETE",
-      url: "/api/orders/" + id
-    })
-    .done(function() {
-      getOrders(orderCategorySelect.val());
-    });
-  }
-
-  // InitializeRows handles appending all of our constructed post HTML inside blogContainer
-  function initializeRows() {
-    orderContainer.empty();
-    var ordersToAdd = [];
-    for (var i = 0; i < orders.length; i++) {
-      ordersToAdd.push(createNewRow(orders[i]));
+function renderOrderItemList(rows) {
+    orderList.children().not(":last").remove();
+    orderContainer.children(".alert").remove();
+    if (rows.length) {
+      console.log(rows);
+      orderList.prepend(rows);
     }
-    orderContainer.append(ordersToAdd);
+    else {
+     
+    }
   }
 
-  // This function constructs a post's HTML
-  function createNewRow(order) {
-    var formattedDate = new Date(order.createdAt);
-    formattedDate = moment(formattedDate).format("MMMM Do YYYY, h:mm:ss a");
-    var newOrderPanel = $("<div>");
-    newOrderPanel.addClass("panel panel-default");
-    var newOrderPanelHeading = $("<div>");
-    newOrderPanelHeading.addClass("panel-heading");
-    var deleteBtn = $("<button>");
-    deleteBtn.text("x");
-    deleteBtn.addClass("delete btn btn-danger");
-    var editBtn = $("<button>");
-    editBtn.text("EDIT");
-    editBtn.addClass("edit btn btn-info");
-    var newOrderTitle = $("<h2>");
-    var newOrderDate = $("<small>");
-    var newOrderCustomer = $("<h5>");
-    newOrderCustomer.text("Written by: " + post.Customer.name);
-    newOrderCustomer.css({
-      float: "right",
-      color: "blue",
-      "margin-top":
-      "-10px"
+ function createOrderItemRow(items) {
+      
+      for(i=0; i < items.length; i++){
+        
+        var newTr = $("<tr>");
+        newTr.append("<td id='productid'>" + items[i].id + "</td>");
+        newTr.append("<td id='productname'>" + items[i].name + "</td>");
+        newTr.append("<td id='productprice'>" + items[i].price + "</td>");
+        newTr.append("<td>" + items[i].quantity + "</td>");
+        newTr.append("<td>" + (items[i].price * items[i].quantity) + "</td>");
+      }
+
+      
+    }
+  
+
+  function getProducts() {
+    
+    $.get("/api/products", function(data) {
+      
+      var rowsToAdd = [];
+      for (var i = 0; i < data.length; i++) {
+        rowsToAdd.push(createProductRow(data[i]));
+      }
+      renderProductList(rowsToAdd);
+      nameInput.val("");
+      priceInput.val("");
+      descInput.val("");
     });
-    var newOrderPanelBody = $("<div>");
-    newOrderPanelBody.addClass("panel-body");
-    var newOrderBody = $("<p>");
-    newOrderTitle.text(order.title + " ");
-    newOrderBody.text(order.body);
-    newOrderDate.text(formattedDate);
-    newOrderTitle.append(newOrderDate);
-    newOrderPanelHeading.append(deleteBtn);
-    newOrderPanelHeading.append(editBtn);
-    newOrderPanelHeading.append(newOrderTitle);
-    newOrderPanelHeading.append(newOrderAuthor);
-    newOrderPanelBody.append(newOrderBody);
-    newOrderPanel.append(newOrderPanelHeading);
-    newOrderPanel.append(newOrderPanelBody);
-    newOrderPanel.data("order", order);
-    return newOrderPanel;
   }
 
-  // This function figures out which post we want to delete and then calls deletePost
-  function handlePostDelete() {
-    var currentOrder = $(this)
-      .parent()
-      .parent()
-      .data("order");
-    deletePost(currentOrder.id);
+ 
+  function createProductRow(productData) {
+      var newTr = $("<tr>");
+      newTr.data("product", productData);
+      newTr.append("<td id='productid'>" + productData.id + "</td>");
+      newTr.append("<td id='productname'>" + productData.name + "</td>");
+      newTr.append("<td id='productprice'>" + productData.price + "</td>");
+      newTr.append("<td>" + productData.description + "</td>");
+      newTr.append("<td> " + "<select class='form-control' id='qty1'> " +
+      "<option>0</option>" +
+      "<option>6</option>" +
+      "<option>12</option>" +
+      "<option>24</option>" + " </td>");
+
+
+      newTr.append("<td><button onclick='addOrderItems()' class='additem btn btn-danger btn-md' type='submit'>Add</button></td>");
+      return newTr;
+    }
+  
+  function renderProductList(rows) {
+    productList.children().not(":last").remove();
+    productContainer.children(".alert").remove();
+    if (rows.length) {
+      productList.prepend(rows);
+    }
+    else {
+      renderEmpty();
+    }
   }
 
-  // This function figures out which post we want to edit and takes it to the appropriate url
-  function handlePostEdit() {
-    var currentOrder = $(this)
-      .parent()
-      .parent()
-      .data("order");
-    window.location.href = "/cms?order_id=" + currentOrder.id;
+
+
+  
+  function renderEmpty() {
+    var alertDiv = $("<div>");
+    alertDiv.addClass("alert alert-danger");
+    alertDiv.html("You must create a Product before you can create an Order.");
+    productContainer.append(alertDiv);
   }
 
-  // This function displays a messgae when there are no posts
+  
+
+  
+
+ 
+  
+ 
+  
   function displayEmpty(id) {
     var query = window.location.search;
     var partial = "";
@@ -138,4 +160,21 @@ $(document).ready(function() {
     orderContainer.append(messageh2);
   }
 
-});
+    function createOrder(){
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+  getProducts();
+
+
+//});
