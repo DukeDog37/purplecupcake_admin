@@ -2,7 +2,7 @@ var db = require("../models");
 
 module.exports = function(app) {
   app.get("/api/orders", function(req, res) {
-    //Join Customer to thier Orders
+    //Gets all Order and the corresponding orderitem data
     db.Order.findAll({
       include: [db.Orderitems]
     }).then(function(dbCustomer) {
@@ -11,7 +11,7 @@ module.exports = function(app) {
   });
 
   app.get("/api/orders/:id", function(req, res) {
-    // Gets singe Customer and their Orders
+    // Gets a single order, by id, and its corresponding orderitem data
     db.Order.findOne({
       include: [db.Orderitems],
       where: {
@@ -25,6 +25,8 @@ module.exports = function(app) {
   
 
 app.post("/api/orders", function(req, res) {
+    //Saves a new order entry and its orderitems; then sets the customerid foreign key in the order table entry
+    console.log(req.body);
     db.Order.create(req.body,{
        include: [{model: db.Orderitems}]
     }).then(function(order){
@@ -35,6 +37,7 @@ app.post("/api/orders", function(req, res) {
 
 
   app.delete("/api/orders/:id", function(req, res) {
+    //Will delete a single order, including its corresponding items.
     db.Order.destroy({
       where: {
         id: req.params.id

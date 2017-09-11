@@ -2,16 +2,15 @@ var db = require("../models");
 
 module.exports = function(app) {
   app.get("/api/products", function(req, res) {
-    //Join Customer to thier Orders
-    db.Product.findAll({
-      
+    //Get all product information
+    db.Product.findAll({      
     }).then(function(dbProduct) {
       res.json(dbProduct);
     });
   });
 
   app.get("/api/products/:id", function(req, res) {
-    // Gets singe Customer and their Orders
+    // Gets a single product by id
     db.Product.findOne({
       where: {
         id: req.params.id
@@ -22,14 +21,14 @@ module.exports = function(app) {
   });
 
   app.post("/api/products", function(req, res) {
-    console.log("req body: " + req.body.price);
+    //Creates a new product
     db.Product.create(req.body).then(function(dbProduct) {
-      console.log(dbProduct);
       res.json(dbProduct);
     });
   });
 
   app.delete("/api/products/:id", function(req, res) {
+    //Deletes a single product
     db.Product.destroy({
       where: {
         id: req.params.id

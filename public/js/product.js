@@ -3,6 +3,7 @@ $(document).ready(function() {
   var nameInput = $('#product-name');
   var descInput = $('#product-desc');
   var priceInput = $('#product-price');
+  var imgInput = $('#product-image');
   var productList = $("tbody");
   var productContainer = $(".product-container");
  
@@ -20,14 +21,18 @@ $(document).ready(function() {
       return;
     }
     if (!descInput.val().trim().trim()) {
-      alter("You must enter a description.");
+      alert("You must enter a description.");
       return;
     }
-    
+    if (!imgInput.val().trim().trim()) {
+      alert("You must enter an image name.");
+      return;
+    }
     
     upsertProduct({
       name: nameInput.val().trim(),
       description: descInput.val().trim(),
+      imgname: imgInput.val().trim(),
       price: parseFloat(priceInput.val()).toFixed(2)
     });
   }
@@ -44,7 +49,9 @@ $(document).ready(function() {
     var newTr = $("<tr>");
     newTr.data("product", productData);
     newTr.append("<td>" + productData.name + "</td>");
+    newTr.append("<td>" + productData.name + "</td>");
     newTr.append("<td>" + productData.price + "</td>");
+    newTr.append("<td><img src='../images/" + productData.imgname + "'</img></td>");
     newTr.append("<td>" + productData.description + "</td>");
     newTr.append("<td><a href='/cms?product_id=" + productData.id + "'>Update Product Info</a></td>");
     newTr.append("<td><a style='cursor:pointer;color:red' class='delete-product'>Delete Product</a></td>");
@@ -63,6 +70,7 @@ $(document).ready(function() {
       renderProductList(rowsToAdd);
       nameInput.val("");
       priceInput.val("");
+      imgInput.val("");
       descInput.val("");
     });
   }
@@ -71,7 +79,7 @@ $(document).ready(function() {
     productList.children().not(":last").remove();
     productContainer.children(".alert").remove();
     if (rows.length) {
-      console.log(rows);
+      //console.log(rows);
       productList.prepend(rows);
     }
     else {

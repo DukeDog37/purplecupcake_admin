@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     addr2: DataTypes.STRING,
     city: DataTypes.STRING,
     state: DataTypes.STRING,
-    zip: DataTypes.STRING    
+    zipcode: DataTypes.STRING    
   });
 
   Customer.associate = function(models) {

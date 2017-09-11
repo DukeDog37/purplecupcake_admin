@@ -26,24 +26,22 @@ $(document).ready(function() {
   function handleCustomerFormSubmit(event) {
     event.preventDefault();
    
-    if (!vpassword.val().trim().trim()) {
-      return;
-    }
-    if (!vemail.val().trim().trim()) {
+      
+    /*if (!vemail.val().trim().trim()) {
       alter("You must enter a valid email address.");
       return;
-    }
+    }*/
    
     insertCustomer({
-      firstname: vfirstname,
-      lastname: vlastname,
-      email: vemail,
-      password: vpassword,
-      addr1: vaddr1,
-      addr2: vaddr2,
-      city: vcity,
-      state: vstate,
-      zip: vzip
+      firstname: vfirstname.val().trim(),
+      lastname: vlastname.val().trim(),
+      email: vemail.val().trim(),
+      password: vpassword.val().trim(),
+      addr1: vaddr1.val().trim(),
+      addr2: vaddr2.val().trim(),
+      city: vcity.val().trim(),
+      state: vstate.val().trim(),
+      zip: vzip.val().trim()
     });
   }
 

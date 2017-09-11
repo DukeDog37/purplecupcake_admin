@@ -1,4 +1,4 @@
-//$(document).ready(function() {
+$(document).ready(function() {
   
   var nameInput = $('#product-name');
   var descInput = $('#product-desc');
@@ -10,29 +10,35 @@
   var orderContainer = $(".order-container");
   var orderList = $(".tb-orderitems");
   var orderCategorySelect = $("#category");
-  
+
+  var customerContainer = $(".customer-container");
+  //var customerList = $(".customerList");
+  var customerSelect = $("#customer");
+  var customerId;
   var orderitems;
   var products;
+  var itemsToAdd = [];
 
   $(document).on("submit", "#order-form", handleOrderFormSubmit);
+  $(document).on("click", ".additem", addOrderItems);
 
   function handleOrderFormSubmit(event) {
     event.preventDefault();
-    // Don't do anything if at least one items is not checked for order
-      console.log("in handleOrderFormSubmit");
-
-    insertOrder({
-      Customerid: 2 ,
-      orderdate: "01/01/2017",
-       Orderitems: [
-          { productid: 1, quantity: 6, price: 3.33},
-          { productid: 2, quantity: 12, price: 4.55}
-          ]});
-
-  }
-     
+    //  console.log("itemsToAdd in order submit: " + itemsToAdd);
+      customerId = customerSelect.val();
+      console.log("cId: " + customerId + " cName: "+ customerSelect.text());
+      
+      var orderDetails = itemsToAdd;
+      console.log(orderDetails);
+      
+      insertOrder({
+        Customerid: customerId,
+        orderdate: "01/01/2017",
+          Orderitems: orderDetails});
+ }
+   
   function insertOrder(orderData) {
-    console.log("in insertOrder");
+    console.log("in insertOrder " + orderData);
     $.post("/api/orders", orderData)
       .then(getProducts);
   }
@@ -42,49 +48,82 @@
 
 
   function addOrderItems() {
-      var itemsToAdd = [];
+      
       var orderItem;
-      console.log(productList.children(this));
+      var listItemData = $(this).parent("td").parent("tr").data("product");
+      var listItemDataQuantity = 6;
+      var id = listItemData.id;
 
-      //orderItem = { "id": productid, "name": productname, "price": productprice, "quantity": qty1 };
-      //console.log("orderItem: " + orderItem);
+      orderItem = { "productid": listItemData.id, "quantity": listItemDataQuantity, "price": parseFloat(listItemData.price).toFixed(2) };
+      //Do not use JSON convert. orderItem goes straight into array as object
+      //only need to JSON.stringify if you are printing to console
       //itemJSON = JSON.stringify(orderItem);
       //itemsToAdd.push(itemJSON);
-      //console.log(itemsToAdd);
-      //renderOrderItemList(createOrderItemRow(itemsToAdd));
+      itemsToAdd.push(orderItem);
+      console.log("adding array item: " + itemsToAdd);
+      
+      createOrderItemRow(orderItem);
+      //disable add button so that only product type is only ordered once
+      
       //call create item row for html
     }
-
+//not used at the moment
 function renderOrderItemList(rows) {
+    //console.log(rows);
     orderList.children().not(":last").remove();
     orderContainer.children(".alert").remove();
-    if (rows.length) {
-      console.log(rows);
-      orderList.prepend(rows);
-    }
-    else {
-     
-    }
+    orderList.prepend(rows);
+    
   }
 
  function createOrderItemRow(items) {
-      
-      for(i=0; i < items.length; i++){
-        
+        console.log("items.id: " + items.id);
         var newTr = $("<tr>");
-        newTr.append("<td id='productid'>" + items[i].id + "</td>");
-        newTr.append("<td id='productname'>" + items[i].name + "</td>");
-        newTr.append("<td id='productprice'>" + items[i].price + "</td>");
-        newTr.append("<td>" + items[i].quantity + "</td>");
-        newTr.append("<td>" + (items[i].price * items[i].quantity) + "</td>");
-      }
-
+        newTr.append("<td id='productid'>" + items.productid + "</td>");
+        newTr.append("<td id='productname'>" + items.name + "</td>");
+        newTr.append("<td id='productprice'>" + items.price + "</td>");
+        newTr.append("<td>" + items.quantity + "</td>");
+        newTr.append("<td>" + (items.price * items.quantity) + "</td>");
+        console.log(newTr);
+        orderList.append(newTr);
+  
       
     }
   
+  function getCustomers() {
+    $.get("/api/customers", renderCustomerList);
+  }
+  // Function to either render a list of customer, or if there are none, direct the user to the page
+  // to create an customer first
+  function renderCustomerList(data) {
+    if (!data.length) {
+      window.location.href = "/customers";
+    }
+    //$(".hidden").removeClass("hidden");
+    var rowsToAdd = [];
+    for (var i = 0; i < data.length; i++) {
+      rowsToAdd.push(createCustomerRow(data[i]));
+    }
+    customerSelect.empty();
+    //console.log(data);
+    //console.log(customerSelect);
+    customerSelect.append(rowsToAdd);
+    customerSelect.val(customerId);
+  }
+
+  // Creates the customer options in the dropdown
+  function createCustomerRow(customer) {
+    var listOption = $("<option>");
+    listOption.attr("value", customer.id);
+    listOption.text(customer.firstname);
+    return listOption;
+  }
+
+  getCustomers();
+
 
   function getProducts() {
-    
+    //console.log("get products call");
     $.get("/api/products", function(data) {
       
       var rowsToAdd = [];
@@ -98,6 +137,7 @@ function renderOrderItemList(rows) {
     });
   }
 
+
  
   function createProductRow(productData) {
       var newTr = $("<tr>");
@@ -106,14 +146,17 @@ function renderOrderItemList(rows) {
       newTr.append("<td id='productname'>" + productData.name + "</td>");
       newTr.append("<td id='productprice'>" + productData.price + "</td>");
       newTr.append("<td>" + productData.description + "</td>");
-      newTr.append("<td> " + "<select class='form-control' id='qty1'> " +
+      newTr.append("<td id='quantity'> " + 
+      "<select id='qty'> " +
       "<option>0</option>" +
       "<option>6</option>" +
       "<option>12</option>" +
-      "<option>24</option>" + " </td>");
+      "<option>24</option>" + 
+      "</select>" +
+      " </td>");
 
 
-      newTr.append("<td><button onclick='addOrderItems()' class='additem btn btn-danger btn-md' type='submit'>Add</button></td>");
+      newTr.append("<td><button class='additem btn btn-danger btn-md' type='submit'>Add</button></td>");
       return newTr;
     }
   
@@ -160,21 +203,10 @@ function renderOrderItemList(rows) {
     orderContainer.append(messageh2);
   }
 
-    function createOrder(){
-
-
-    }
-
-
-
-
-
-
-
-
-
-
+    
+  
   getProducts();
+  
 
 
-//});
+});

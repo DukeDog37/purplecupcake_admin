@@ -35,6 +35,7 @@
 								<th>Name</th>
 								<th>Price</th>
 								<th>Description</th>
+								<th>Image name</th>
 								<th>Update Product</th>
 								<th>Delete Product</th>
 							</tr>
@@ -42,13 +43,16 @@
 						<tbody>
 							<tr id="form-row">
 								<form id="product-form">
-									<td colspan="4">
+									<td colspan="3">
 										<input placeholder="Enter name" id="product-name" type="text" />
 									</td>
-									<td colspan="4">
+									<td colspan="3">
 										<input placeholder="Enter Price" id="product-price" onkeypress="return isNumberKey(event)" type="text" name="txtChar" name="txtChar"/>
 									</td>
-									<td colspan="4">
+									<td colspan="3">
+										<input placeholder="Enter image" id="product-image" type="text" />
+									</td>
+									<td colspan="3">
 										<input placeholder="Enter a description" id="product-desc" type="text" />
 									</td>
 									<td><button type="submit" class="btn btn-success">Create Product</button>
