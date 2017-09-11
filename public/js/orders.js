@@ -51,6 +51,7 @@ $(document).ready(function() {
       
       var orderItem;
       var listItemData = $(this).parent("td").parent("tr").data("product");
+      
       var listItemDataQuantity = 6;
       var id = listItemData.id;
 
@@ -64,7 +65,7 @@ $(document).ready(function() {
       
       createOrderItemRow(orderItem);
       //disable add button so that only product type is only ordered once
-      
+
       //call create item row for html
     }
 //not used at the moment

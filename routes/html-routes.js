@@ -13,16 +13,14 @@ module.exports = function(app) {
     res.sendFile(path.join(__dirname, "../public/customer-manager.html"));
   });
 
-  // cms route loads customer-manager.html
-  app.get("/cms", function(req, res) {
-    res.sendFile(path.join(__dirname, "../public/customer-manager.html"));
-  });
-
   // orders route loads orders.html
   app.get("/orders", function(req, res) {
     res.sendFile(path.join(__dirname, "../public/orders.html"));
   });
-
+ // orders route loads orders.html
+  app.get("/Orderactivity", function(req, res) {
+    res.sendFile(path.join(__dirname, "../public/Orderactivity.html"));
+  });
   // customers route loads customer-manager.html
   app.get("/customers", function(req, res) {
     res.sendFile(path.join(__dirname, "../public/customer-manager.html"));

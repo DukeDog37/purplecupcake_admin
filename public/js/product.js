@@ -53,7 +53,7 @@ $(document).ready(function() {
     newTr.append("<td>" + productData.price + "</td>");
     newTr.append("<td><img src='../images/" + productData.imgname + "'</img></td>");
     newTr.append("<td>" + productData.description + "</td>");
-    newTr.append("<td><a href='/cms?product_id=" + productData.id + "'>Update Product Info</a></td>");
+    newTr.append("<td><a href='/products?product_id=" + productData.id + "'>Update Product Info</a></td>");
     newTr.append("<td><a style='cursor:pointer;color:red' class='delete-product'>Delete Product</a></td>");
     return newTr;
   }

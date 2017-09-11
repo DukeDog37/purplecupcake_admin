@@ -67,8 +67,8 @@ $(document).ready(function() {
     newTr.append("<td>" + customerData.city + "</td>");
     newTr.append("<td>" + customerData.state + "</td>");
     newTr.append("<td>" + customerData.zip + "</td>");
-    newTr.append("<td><a href='/orders?customerid=" + customerData.id + "'>Go to Orders</a></td>");
-    newTr.append("<td><a href='/cms?customerid=" + customerData.id + "'>Create new Order</a></td>");
+    newTr.append("<td><a href='/Orderactivity?customerid=" + customerData.id + "'>Go to Orders</a></td>");
+    newTr.append("<td><a href='/orders?customerid=" + customerData.id + "'>Create new Order</a></td>");
     newTr.append("<td><a style='cursor:pointer;color:red' class='delete-customer'>Delete Customer</a></td>");
     return newTr;
   }
